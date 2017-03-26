@@ -6,6 +6,9 @@ addpath('lib/libsvm-3.22/windows');
 %% Experiment parameters
 fraction = 0.05;
 
+% cache size for libSVM in MB
+cache_size = 1000;
+
 % number of values for the training grid search
 grid_search_size = 8;
 
@@ -59,7 +62,7 @@ for m=1:grid_search_size
     for n=1:grid_search_size
         gamma = 2^gamma_ks(n);
         
-        options = sprintf('-c %.10f -g %.10f -q', c, gamma);
+        options = sprintf('-c %.10f -g %.10f -m %d -q', c, gamma, cache_size);
         model = svmtrain(train_labels, train_images, options);
         [predicted_labels, accuracy, prob_estimates] = svmpredict(test_labels, test_images, model, '-q');
         

@@ -1,10 +1,11 @@
 %% Pattern Recognition FS2017
-%  SVM Test
+%  Exercise 2a
+%  Adrian Waelchli
 clc;
 clear;
 
 %% Load the training and test set
-fraction = 0.01;
+fraction = 0.02;
 
 train = csvread('data/train.csv');
 n_train = ceil(fraction * size(train, 1));
@@ -34,12 +35,41 @@ o = get_supported_options();
 options = [o.kernel.rbf, o.quiet];
 
 tic;
-[ bestC, bestGamma, acc ] = grid_search_svm(train_images, train_labels, options, Cs, gammas, K);
+[ bestC, bestGamma, ~ ] = grid_search_svm(train_images, train_labels, options, Cs, gammas, K);
 toc
 
-%% Train again with selected hyperparameters
+% Train again with selected hyperparameters
 o = get_supported_options();
 options = [o.kernel.rbf, o.quiet, o.cost(bestC), o.kernel.gamma(bestGamma)];
 model = svmtrain(train_labels, train_images, options);
 
+% Run svm on the unseen test set
 [~, test_accuracy, ~] = svmpredict(test_labels, test_images, model, []);
+
+fprintf('Accuracy on test set using RBF kernel with C = %f and gamma = %f: %f\n', bestC, bestGamma, test_accuracy(1));
+
+%% Train model using LINEAR kernel and grid search with cross validation
+% Same as above but the linear kernel has no parameter gamma. Perform grid
+% search in 1D on cost C
+
+K = 10;
+grid_resolution = 10;
+
+Cs = 2 .^ linspace(-5, 15, grid_resolution);
+
+o = get_supported_options();
+options = [o.kernel.linear, o.quiet];
+
+tic;
+[ bestC, ~, ~ ] = grid_search_svm(train_images, train_labels, options, Cs, 0, K);
+toc
+
+% Train again with selected hyperparameter C
+o = get_supported_options();
+options = [o.kernel.linear, o.quiet, o.cost(bestC)];
+model = svmtrain(train_labels, train_images, options);
+
+% Run svm on the unseen test set
+[~, test_accuracy, ~] = svmpredict(test_labels, test_images, model, []);
+
+fprintf('Accuracy on test set using linear kernel with C = %f: %f\n', bestC, test_accuracy(1));

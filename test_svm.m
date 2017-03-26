@@ -4,6 +4,7 @@ clc;
 addpath('lib/libsvm-3.22/windows');
 
 %% Experiment parameters
+verbose = true;
 fraction = 0.01;
 
 % number of values for the training grid search
@@ -15,7 +16,6 @@ fprintf('Started experiment.\n');
 %% Load data
 fprintf('Loading data.\n');
 if ~exist('train_images', 'var') || ~exist('test_images', 'var') || used_fraction ~= fraction
-    
     
     used_fraction = fraction;
     
@@ -63,7 +63,9 @@ for m=1:grid_search_size
     
     % perform training with linear kernel
     linear_accuracy = train_svm(train_labels, train_images, test_labels, test_images, c);
-    fprintf('Linear kernel, C = %.5f, gamma = %.4f. Accuracy: %.4f\n', c, gamma, linear_accuracy);
+    if verbose
+        fprintf('Linear kernel, C = %.5f, gamma = %.4f. Accuracy: %.4f\n', c, gamma, linear_accuracy);
+    end
     
     if linear_accuracy > max_linear_accuracy
         max_linear_accuracy = linear_accuracy;
@@ -76,7 +78,9 @@ for m=1:grid_search_size
         % perform training with RBF kernel
         rbf_accuracy = train_svm(train_labels, train_images, test_labels, test_images, c, gamma);
         
-        fprintf('RBF kernel, C = %.5f, gamma = %.4f. Accuracy: %.4f\n', c, gamma, rbf_accuracy);
+        if verbose
+            fprintf('RBF kernel, C = %.5f, gamma = %.4f. Accuracy: %.4f\n', c, gamma, rbf_accuracy);
+        end
         
         if rbf_accuracy > max_rbf_accuracy
             max_rbf_accuracy = rbf_accuracy;

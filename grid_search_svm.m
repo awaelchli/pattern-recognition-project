@@ -31,6 +31,7 @@ for i = 1 : grid_size(1)
     end
 end
 
+% Select the parameters that performed the best
 [col_max, k] = max(accuracy, [], 1);
 [max_acc, l] = max(col_max, [], 2);
 

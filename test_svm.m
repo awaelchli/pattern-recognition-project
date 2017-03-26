@@ -4,10 +4,7 @@ clc;
 addpath('lib/libsvm-3.22/windows');
 
 %% Experiment parameters
-fraction = 0.05;
-
-% cache size for libSVM in MB
-cache_size = 1000;
+fraction = 0.01;
 
 % number of values for the training grid search
 grid_search_size = 8;
@@ -50,28 +47,40 @@ end
 c_ks = linspace(-2, 15, grid_search_size);
 gamma_ks = linspace(-15, 1, grid_search_size);
 
-%% Training with grid search on regularization parameter C and kernel parameter gamma
+%% Training with linear and RBF kernels (grid search for parameters)
 fprintf('Training multi-class SVM.\n');
 tic;
 
-max_accuracy = 0;
-best_c = 0;
+max_linear_accuracy = 0;
+best_linear_c = 0;
+
+max_rbf_accuracy = 0;
+best_rbf_c = 0;
 best_gamma = 0;
+
 for m=1:grid_search_size
     c = 2^c_ks(m);
+    
+    % perform training with linear kernel
+    linear_accuracy = train_svm(train_labels, train_images, test_labels, test_images, c);
+    fprintf('Linear kernel, C = %.5f, gamma = %.4f. Accuracy: %.4f\n', c, gamma, linear_accuracy);
+    
+    if linear_accuracy > max_linear_accuracy
+        max_linear_accuracy = linear_accuracy;
+        best_linear_c = c;
+    end
+    
     for n=1:grid_search_size
         gamma = 2^gamma_ks(n);
         
-        options = sprintf('-c %.10f -g %.10f -m %d -q', c, gamma, cache_size);
-        model = svmtrain(train_labels, train_images, options);
-        [predicted_labels, accuracy, prob_estimates] = svmpredict(test_labels, test_images, model, '-q');
+        % perform training with RBF kernel
+        rbf_accuracy = train_svm(train_labels, train_images, test_labels, test_images, c, gamma);
         
-        accuracy = accuracy(1);
-        fprintf('Training with C = %.5f and gamma = %.4f. Accuracy: %.4f\n', c, gamma, accuracy);
+        fprintf('RBF kernel, C = %.5f, gamma = %.4f. Accuracy: %.4f\n', c, gamma, rbf_accuracy);
         
-        if accuracy > max_accuracy
-            max_accuracy = accuracy;
-            best_c = c;
+        if rbf_accuracy > max_rbf_accuracy
+            max_rbf_accuracy = rbf_accuracy;
+            best_rbf_c = c;
             best_gamma = gamma;
         end
     end
@@ -79,5 +88,10 @@ end
 
 toc;
 
-fprintf('\nBest accuracy: %.4f\n', max_accuracy);
-fprintf('Best parameters: C = %.5f, gamma = %.5f.\n', best_c, best_gamma);
+fprintf('\nResults for linear kernel:\n');
+fprintf('Best accuracy: %.4f\n', max_linear_accuracy);
+fprintf('Best parameters: C = %.5f.\n', best_linear_c);
+
+fprintf('\nResults for RBF kernel:\n');
+fprintf('Best accuracy: %.4f\n', max_rbf_accuracy);
+fprintf('Best parameters: C = %.5f, gamma = %.5f.\n', best_rbf_c, best_gamma);

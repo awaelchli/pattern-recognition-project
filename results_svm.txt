@@ -1,0 +1,2 @@
+On 10% of the training and test set:
+Accuracy on test set using RBF kernel with C = 3.174802 and gamma = 0.031250: 95.136576

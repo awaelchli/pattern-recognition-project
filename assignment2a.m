@@ -4,11 +4,11 @@
 clc;
 clear;
 
-addpath('lib/libsvm-3.22/');
+addpath('lib/libsvm-3.22/windows/');
 
 %% Load the training and test set
 [ train_images, train_labels, ...
-  test_images, test_labels, shift, scale ] = load_MNIST('data/', 0.01);
+  test_images, test_labels, shift, scale ] = load_MNIST('data/', 0.1);
 
 %%  Train model using RBF kernel and grid search with cross validation
 K = 10;

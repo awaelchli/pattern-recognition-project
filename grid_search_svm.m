@@ -16,27 +16,23 @@ function [ C, gamma, accuracy ] = grid_search_svm( train_set, train_labels, svm_
 
 opt = get_supported_options();
 
-grid_size = [numel(gridC), numel(gridGamma)];
-accuracy = zeros(grid_size);
+[Cs, Gs] = meshgrid(gridC, gridGamma);
+accuracy = zeros(numel(Cs), 1);
 
-for i = 1 : grid_size(1)
-    for j = 1 : grid_size(2)
+parfor i = 1 : numel(Cs)
         
-        C = gridC(i);
-        gamma = gridGamma(j);
-        
-        current_options = [svm_options, opt.cost(C), opt.kernel.gamma(gamma), ...
-                           opt.cross_validation(k)];
-        accuracy(i, j) = svmtrain(train_labels, train_set, current_options);
-    end
+    C = Cs(i);
+    gamma = Gs(i);
+
+    current_options = [svm_options, opt.cost(C), opt.kernel.gamma(gamma), ...
+                       opt.cross_validation(k)];
+    accuracy(i) = svmtrain(train_labels, train_set, current_options);
 end
 
 % Select the parameters that performed the best
-[col_max, k] = max(accuracy, [], 1);
-[max_acc, l] = max(col_max, [], 2);
-
-C = gridC(k(l));
-gamma = gridGamma(l);
+[max_acc, k] = max(accuracy);
+C = Cs(k);
+gamma = Gs(k);
 accuracy = max_acc;
 
 end

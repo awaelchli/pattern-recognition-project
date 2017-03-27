@@ -4,6 +4,8 @@
 clc;
 clear;
 
+addpath('lib/libsvm-3.22/');
+
 %% Load the training and test set
 [ train_images, train_labels, ...
   test_images, test_labels, shift, scale ] = load_MNIST('data/', 0.01);

@@ -64,7 +64,7 @@ for m=1:grid_search_size
     % perform training with linear kernel
     linear_accuracy = train_svm(train_labels, train_images, test_labels, test_images, c);
     if verbose
-        fprintf('Linear kernel, C = %.5f, gamma = %.4f. Accuracy: %.4f\n', c, gamma, linear_accuracy);
+        fprintf('Linear kernel, C = %.5f. Accuracy: %.4f\n', c, linear_accuracy);
     end
     
     if linear_accuracy > max_linear_accuracy

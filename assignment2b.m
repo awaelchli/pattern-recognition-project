@@ -35,29 +35,17 @@ inds = sub2ind(size(test_labels2), test_labels + 1, 1 : n_test);
 test_labels2(inds) = 1;
 
 %% Train the network
-% TODO: Find optimal parameters
+% Perform cross-validation to optimize these hyperparameters:
+% - Learning rate
+% - Number of neurons in hidden layers
 
-trainFcn = 'trainscg'; 
+hidden_layer_sizes = 10 : 10 : 100;
+learning_rates = linspace(0.01, 1, 5);
 
-% Create a feedforward network
-hiddenLayerSize = 50;
-net = patternnet(hiddenLayerSize, trainFcn);
+[net, performance] = mlp_cross_validation(train_images, train_labels2, hidden_layer_sizes, learning_rates);
 
-% Divide data into training and validation
-net.divideFcn = 'dividerand';  % Divide data randomly
-net.divideMode = 'sample';  % Divide up every sample
-net.divideParam.trainRatio = 60/100;
-net.divideParam.valRatio = 40/100;
-
-% Cross-Entropy is good for classification
-net.performFcn = 'crossentropy';
-net.plotFcns = {'plotperform', 'plotroc'};
-
-% View the Network
+% View the network that performed best
 view(net);
-
-% Train the Network
-[net, tr] = train(net, train_images, train_labels2);
 
 %% Test the Network
 % Feed the test images

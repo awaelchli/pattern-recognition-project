@@ -28,6 +28,9 @@ for i = 1 : n_params
     net = patternnet(hiddenLayerSize, trainFcn, performFcn);
     net.trainParam.lr = learning_rate;
     
+    % Stop training if the network fails to improve (validation checks)
+    net.trainParam.max_fail = 6;
+    
     % Divide data into training and validation set
     net.divideFcn = 'dividerand';
     net.divideParam.trainRatio = 0.8;

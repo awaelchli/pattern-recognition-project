@@ -6,7 +6,7 @@ close all;
 c = 2.6;                    % learning rate
 nbrOfHiddenNodes = 25;
 nbrOfOutputNodes = 10;
-nbrOfEpoches = 5;
+nbrOfEpoches = 100;
 lambda = 1;                 % regularization
 
 %% Load the training set

@@ -17,6 +17,20 @@ trainLabels = train(1 : n_data, 1);
 trainData = train(1 : n_data, 2 : end);
 clear train;
 
+%% Randomly select 100 data points to display
+sel = randperm(size(trainData, 1));
+sel = sel(1:100);
+
+displayData(trainData(sel, :));
+
+%% Feature Selection/ Feature Descriptor
+fprintf('\nTransform trainingset to hog\n');
+for i=1:size(trainData,1)
+    hg=hog(reshape(trainData(i,:),28,28),8);
+    newData(i,:)= hg(:);
+end
+trainData=newData;
+
 %% Load the test set
 fraction = 1;
 test = csvread('../data/test.csv');
@@ -25,12 +39,14 @@ testLabels = test(1 : n_data, 1);
 testData = test(1 : n_data, 2 : end);
 clear test;
 
-
-%% Randomly select 100 data points to display
-sel = randperm(size(trainData, 1));
-sel = sel(1:100);
-
-displayData(trainData(sel, :));
+%% Feature Selection/ Feature Descriptor
+fprintf('\nTransform testset to hog\n');
+clear newData;
+for i=1:size(testData,1)
+    hg=hog(reshape(testData(i,:),28,28),8);
+    newData(i,:)= hg(:);
+end
+testData=newData;
 
 %% train 
 tic;

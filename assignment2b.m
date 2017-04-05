@@ -5,7 +5,7 @@ clc;
 clear;
 
 %% Load the training and test set
-fraction = 0.1;
+fraction = 1;
 
 train = csvread('data/train.csv');
 n_train = ceil(fraction * size(train, 1));
@@ -39,13 +39,29 @@ test_labels2(inds) = 1;
 % - Learning rate
 % - Number of neurons in hidden layers
 
-hidden_layer_sizes = 10 : 10 : 100;
-learning_rates = linspace(0.01, 1, 5);
+hidden_layer_sizes = 50;%10 : 20 : 100;
+learning_rates = 0.01;%linspace(0.01, 1, 5);
 
-[net, performance] = mlp_cross_validation(train_images, train_labels2, hidden_layer_sizes, learning_rates);
+tic;
+[net, tr] = mlp_cross_validation(train_images, train_labels2, hidden_layer_sizes, learning_rates);
+toc;
+
+% These are the optimal hyper-parameters
+learning_rate = net.trainParam.lr;
+hidden_units = net.layers{1}.size();
+
+% Show performance vs. iteration for the best network
+fig = figure;
+plotperform(tr);
+perf_file = sprintf('Performance-vs-epochs-hidden=%d-LR=%f.png', hidden_units, learning_rate);
+saveas(fig, perf_file);
 
 % View the network that performed best
 view(net);
+
+fprintf('Optimal parameters: \n');
+fprintf('\tLearning rate: %f \n', learning_rate);
+fprintf('\tNumber of hidden units: %d \n', hidden_units);
 
 %% Test the Network
 % Feed the test images
@@ -62,5 +78,9 @@ prediction = prediction - 1;
 accuracy = sum(prediction == test_labels) / n_test;
 
 % Plot ROC curve
-figure, plotroc(test_labels2, output);
+fig = figure;
+plotroc(test_labels2, output);
+roc_file = sprintf('ROC-hidden=%d-LR=%f.png', hidden_units, learning_rate);
+saveas(fig, roc_file);
 
+fprintf('Classification accuracy: %f\n', accuracy);

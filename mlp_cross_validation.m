@@ -1,4 +1,4 @@
-function [ best_net, perf ] = mlp_cross_validation( data, labels, neurons, learning_rates )
+function [ best_net, tr ] = mlp_cross_validation( data, labels, neurons, learning_rates )
 % Performs cross-validation to optimize hyperparameters and returns the
 % network with the best parameters:
 %   - Number of neurons in hidden unit
@@ -16,7 +16,8 @@ trainFcn = 'trainscg';
 performFcn = 'crossentropy';
 
 % Stores each network and its performance
-network_performances = cell(n_params, 2);
+networks = cell(n_params, 2);
+network_performances = zeros(n_params, 1);
 
 for i = 1 : n_params
     
@@ -37,15 +38,17 @@ for i = 1 : n_params
     % Train the Network
     [net, tr] = train(net, data, labels);
     
-    network_performances{i, 1} = net;
-    network_performances{i, 2} = tr.best_perf;
+    networks{i, 1} = net;
+    networks{i, 2} = tr;
+    network_performances(i) = tr.best_perf;
+    
     
 end
 
-[~, ind] = max([network_performances{:, 2}]);
+[~, ind] = min(network_performances);
 
-best_net = network_performances{ind, 1};
-perf = network_performances{ind, 2};
+best_net = networks{ind, 1};
+tr = networks{ind, 2};
 
 
 end

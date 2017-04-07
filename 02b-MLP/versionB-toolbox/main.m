@@ -19,13 +19,12 @@ test_labels = test(1 : n_test, 1)';
 test_images = test(1 : n_test, 2 : end)';
 clear test;
 
-%% Scale data
+% Scale data
 scale_factor = 1 / max(train_images(:));
 train_images = train_images * scale_factor;
 test_images = test_images * scale_factor;
 
-%% Convert labels to logical vector
-
+% Convert labels to logical vector
 train_labels2 = zeros(10, n_train, 'logical');
 inds = sub2ind(size(train_labels2), train_labels + 1, 1 : n_train);
 train_labels2(inds) = 1;
@@ -39,8 +38,8 @@ test_labels2(inds) = 1;
 % - Learning rate
 % - Number of neurons in hidden layers
 
-hidden_layer_sizes = 50;%10 : 20 : 100;
-learning_rates = 0.01;%linspace(0.01, 1, 5);
+hidden_layer_sizes = 50 : 10 : 100;
+learning_rates = linspace(0.001, 0.05, 8);
 
 tic;
 [net, tr] = mlp_cross_validation(train_images, train_labels2, hidden_layer_sizes, learning_rates);

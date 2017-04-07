@@ -16,10 +16,11 @@ trainFcn = 'trainscg';
 performFcn = 'crossentropy';
 
 % Stores each network and its performance
-networks = cell(n_params, 2);
+networks = cell(n_params, 1);
+train_stats = cell(n_params, 1);
 network_performances = zeros(n_params, 1);
 
-for i = 1 : n_params
+parfor i = 1 : n_params
     
     learning_rate = rate_params(i);
     hiddenLayerSize = neuron_params(i);
@@ -34,24 +35,25 @@ for i = 1 : n_params
     % Divide data into training and validation set
     net.divideFcn = 'dividerand';
     net.divideParam.trainRatio = 0.8;
-    net.divideParam.valRatio = 0.2;
+    net.divideParam.valRatio = 0.1;
+    net.divideParam.testRatio = 0.1;
 
     net.plotFcns = {'plotperform', 'plotroc'};
 
     % Train the Network
     [net, tr] = train(net, data, labels);
     
-    networks{i, 1} = net;
-    networks{i, 2} = tr;
-    network_performances(i) = tr.best_perf;
-    
-    
+    networks{i} = net;
+    train_stats{i} = tr;
+    network_performances(i) = tr.best_vperf;
 end
 
-[~, ind] = min(network_performances);
+network_performances
 
-best_net = networks{ind, 1};
-tr = networks{ind, 2};
+[x, ind] = min(network_performances);
+x
+best_net = networks{ind};
+tr = train_stats{ind};
 
 
 end

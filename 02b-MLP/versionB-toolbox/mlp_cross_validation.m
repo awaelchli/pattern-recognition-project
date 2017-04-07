@@ -48,10 +48,8 @@ parfor i = 1 : n_params
     network_performances(i) = tr.best_vperf;
 end
 
-network_performances
+[~, ind] = min(network_performances);
 
-[x, ind] = min(network_performances);
-x
 best_net = networks{ind};
 tr = train_stats{ind};
 

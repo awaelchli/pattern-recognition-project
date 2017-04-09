@@ -1,6 +1,6 @@
 %% Pattern Recognition FS2017
 %  Assignment 2b
-%  Adrian Waelchli
+%  Group Pink
 clc;
 clear;
 

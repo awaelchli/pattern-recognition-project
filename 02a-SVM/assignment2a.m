@@ -1,6 +1,6 @@
 %% Pattern Recognition FS2017
 %  Exercise 2a
-%  Adrian Waelchli
+%  Group Pink
 clc;
 clear;
 

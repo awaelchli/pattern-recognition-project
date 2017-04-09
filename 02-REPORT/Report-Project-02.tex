@@ -39,13 +39,20 @@
 \setlength{\fboxsep}{0pt}
 
 \title{Pattern Recognition\\Exercise 2}
-\author{Mario Kaufmann \\ Ramona Imhof \\ Jakob Sch\"arer \\ Adrian W\"alchli \\ Jan Liechti}
+\author{Mario Kaufmann \\ Ramona Imhof \\ Jakob Sch\"arer \\ Adrian W\"alchli \\ Jan Luca Liechti}
 
 \begin{document}
 
 \maketitle
 
 \section{SVM}
+Using the \textit{libsvm}\footnote{\url{https://www.csie.ntu.edu.tw/~cjlin/libsvm/}} SVM library, we used the following parameters to obtain the best possible results:
+\begin{itemize}
+\item $k = 10$ (for k-fold cross-validation)
+\item $C = 2^{-5}, \ldots, 2^{15}$ (10 different values in total)
+\item $\gamma = 2^{-15}, \ldots, 2^{3}$ (10 different values in total)
+\end{itemize}
+With these values, we are following the \textit{libsvm} guide to support vector machines\footnote{\url{https://www.csie.ntu.edu.tw/~cjlin/papers/guide/guide.pdf}, p. 5-8.}. We also normalize all values to the interval $[0,1]$.
 
 \section{MLP}
 

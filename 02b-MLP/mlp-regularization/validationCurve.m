@@ -1,4 +1,4 @@
-function [error_train, error_val, error_test] = ...
+function [error_train, error_val, error_test, accuracy_train, accuracy_xval, accuracy_test] = ...
     validationCurve(X, y, Xval, yval, Xtest, ytest, nbrOfOutputNodes, nbrOfHiddenNodes, lambdaList, c, nbrOfEpoches)
 %VALIDATIONCURVE Generate the train and validation errors needed to
 %plot a validation curve that we can use to select lambda
@@ -14,6 +14,11 @@ function [error_train, error_val, error_test] = ...
 error_train = zeros(length(lambdaList), 1);
 error_val = zeros(length(lambdaList), 1);
 error_test = zeros(length(lambdaList), 1);
+
+accuracy_train = zeros(length(lambdaList), 1);
+accuracy_xval = zeros(length(lambdaList), 1);
+accuracy_test = zeros(length(lambdaList), 1);
+
 
 % ====================== YOUR CODE HERE ======================
 % Instructions: Fill in this function to return training errors in 
@@ -41,16 +46,25 @@ i = 0;
 for lambda = lambdaList
     i=i+1;
     [Theta1, Theta2, Jtrain] = mlpTrain(y, X, c, nbrOfHiddenNodes, nbrOfOutputNodes, nbrOfEpoches, lambda);
+    
+    
     [Jcross, GradCross] = nnCostFunction([Theta1(:);Theta2(:)], ...
-                                   nbrOfInputNodes, ...
+                                   size(Xval,2), ...
                                    nbrOfHiddenNodes, ...
                                    nbrOfOutputNodes, ...
-                                   Xval, yval, lambda, c);
+                                   Xval, yval+1, lambda, c);
     [Jtest, GradCross] = nnCostFunction([Theta1(:);Theta2(:)], ...
-                                   nbrOfInputNodes, ...
+                                   size(Xtest,2), ...
                                    nbrOfHiddenNodes, ...
                                    nbrOfOutputNodes, ...
-                                   Xtest, ytest, lambda, c);
+                                   Xtest, ytest+1, lambda, c);
+                               
+    pred = mlpPredict(Theta1, Theta2, X);
+    accuracy_train(i) = mean(double(pred == y)) * 100;
+    pred = mlpPredict(Theta1, Theta2, Xval);
+    accuracy_xval(i) = mean(double(pred == yval)) * 100;
+    pred = mlpPredict(Theta1, Theta2, Xtest);
+    accuracy_test(i) = mean(double(pred == ytest)) * 100;
     
     error_train(i) = Jtrain(end);
     error_val(i) = Jcross(end);

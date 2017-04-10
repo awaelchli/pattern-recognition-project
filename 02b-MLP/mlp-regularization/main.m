@@ -7,12 +7,12 @@ cList = [2.5];         % learning rate
 nbrOfHiddenNodesList = [100];
 nbrOfOutputNodes = 10;
 nbrOfEpoches = 100;
-lambdaList = [0.25,0.5,0.75];                 % regularization
+lambdaList = [0, 0.005, 0.01, 0.05, 0.1, 0.2, 0.3];                 % regularization
 fraction = 1;
 
 %% Load the training set
 
-train = csvread('../data/train.csv');
+train = csvread('../../data/train.csv');
 n_data = ceil(fraction * size(train, 1));
 trainLabels = train(1 : n_data, 1);
 trainData = train(1 : n_data, 2 : end);
@@ -33,8 +33,7 @@ end
 trainData=newData;
 
 %% Load the test set
-fraction = 1;
-test = csvread('../data/test.csv');
+test = csvread('../../data/test.csv');
 n_data = ceil(fraction * size(test, 1));
 testLabels = test(1 : n_data, 1);
 testData = test(1 : n_data, 2 : end);
@@ -98,7 +97,29 @@ trainData = trainData(n_cross+1 : end, :);
 trainLabels = trainLabels(n_cross+1: end);
 
 %% cross val
-[error_train, error_xval, error_test] = validationCurve(trainData, trainLabels, crossValData, crossValLabels, testData, testLabels, nbrOfOutputNodes, nbrOfHiddenNodes, lambda, c, nbrOfEpoches);
+for nbrOfHiddenNodes = nbrOfHiddenNodesList
+    for c = cList
+    	[error_train, error_xval, error_test, accuracy_train, accuracy_xval, accuracy_test] = validationCurve(trainData, trainLabels, crossValData, crossValLabels, testData, testLabels, nbrOfOutputNodes, nbrOfHiddenNodes, lambdaList, c, nbrOfEpoches);
+    
+        % plot 
+        figure;
+        title(sprintf('Regularization Crossvalidation\nc=%.2f hn=%.0f i=%.0f',c,nbrOfHiddenNodes,i));
+        yyaxis left;
+        plot(lambdaList, error_train, lambdaList, error_xval, lambdaList, error_test, 'LineWidth', 2);
+        xlabel('regularization (lambda)');
+        ylabel('cost');
+        legend('training set', 'validation set', 'test set');
+        hold on;
+        yyaxis right;
+        ylabel('accuracy');
+        plot(lambdaList, accuracy_train, lambdaList, accuracy_xval, lambdaList, accuracy_test, 'LineWidth', 2);
+        legend('training set', 'validation set', 'test set');
+        hold off;
+        saveas(gcf,['plots/xval_c',num2str(c,2),'_hn', num2str(nbrOfHiddenNodes,1),'i', num2str(i,1),'.','png']);
+        close gcf; 
+
+    end
+end
 
 
 

@@ -13,7 +13,7 @@
 \hypersetup{
 	colorlinks=true,
 	linkcolor=red,
-	filecolor=magenta,      
+	filecolor=magenta,
 	urlcolor=blue,
 }
 
@@ -24,15 +24,15 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{18pt}
 
-%\usepackage[latin1]{inputenc} 
-%\usepackage[T1]{fontenc} 
+%\usepackage[latin1]{inputenc}
+%\usepackage[T1]{fontenc}
 
-\usepackage{listings} 
-\lstset{% 
-   language=Matlab, 
-   basicstyle=\small\ttfamily, 
+\usepackage{listings}
+\lstset{%
+   language=Matlab,
+   basicstyle=\small\ttfamily,
    frame=single,
-} 
+}
 
 \newcommand*\diff{\mathop{}\!\mathrm{d}}
 
@@ -56,10 +56,8 @@ With these values, we are following the \textit{libsvm} guide to support vector 
 
 \section{MLP}
 
-\subsection{Implementation with standard MATLAB tools}
-
 \subsection{Implementation with NN Toolbox}
-As an alternative approach, we used the Neural Network toolbox from {MATLAB} to implement the {MLP}.
+The Neural Network toolbox from {MATLAB} was used to implement the {MLP}.
 We used cross-validation to find the optimal number of neurons in the hidden layer as well as the optimal learning rate.
 We adapted a grid search on the following search space:
 \begin{itemize}
@@ -73,12 +71,28 @@ The classification accuracy on the test set with these parameters is \textbf{96.
 \begin{figure}[tb]
 	\centering
 	\includegraphics[width=12cm]{{images/mlp-versionB-toolbox/Performance-vs-epochs-hidden=140-LR=0.001000}.png}
-	\caption{Cross-entropy error vs. epochs. 
+	\caption{Cross-entropy error vs. epochs.
 			 The test set in this figure is not the same as the test set we use for the final evaluation.
-			 These are the three splits to verify the performance during training. 
+			 These are the three splits to verify the performance during training.
 			 We abort after 6 validation checks (when the performance does not improve anymore).}
 	\label{fig:perf-vs-epoch-toolbox}
 \end{figure}
 
+\subsection{Implementation with standard MATLAB tools}
+Additionally to the solution with the neural network toolbox we implemented our own approach for training a {MLP}. It can be found in the folder \textit{mlp-regularization}. The implementation uses regularization controlled by the parameter $\lambda \in [0, 0.3]$. The other parameters were set as follows after optimization:
+\begin{itemize}
+	\item learning rate $c = 1$
+	\item number of hidden nodes: 100
+	\item number of epochs: 100
+\end{itemize}
+In addition, the feature descriptor \textit{HOG}\footnote{\url{http://lear.inrialpes.fr/people/triggs/pubs/Dalal-cvpr05.pdf}} was used to transform the samples into another feature space.\\
+The parameter $\lambda$ heavily influences the classification accuracy. As can be seen in figure \ref{fig:results-own}, the optimal value for $\lambda$ lies around 0.1. Furthermore, it is visible that as expected, the cost is lower on the training set than on the test and validation set, just as the accuracy is lower on the test and validation set than on the training set. Under this configuration the classification accuracy was found to be \textbf{96.5936} percent on the test set.
+
+\begin{figure}[tb]
+	\centering
+	\includegraphics[width=12cm]{{images/mlp-versionA/results}.png}
+	\caption{Accuracy and cost on the training, validation and test set depending on the parameter $\lambda$. The optimal value for $\lambda$ lies around 0.1.}
+	\label{fig:results-own}
+\end{figure}
 
 \end{document}

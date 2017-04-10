@@ -3,7 +3,7 @@ clear all;
 close all;
 
 %% settings
-cList = [2.5];         % learning rate
+cList = [1];         % learning rate
 nbrOfHiddenNodesList = [100];
 nbrOfOutputNodes = 10;
 nbrOfEpoches = 100;

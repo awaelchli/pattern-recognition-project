@@ -1,10 +1,11 @@
-function [ Theta1, Theta2 ] = mlpTrain( y, X, c, nbrOfHiddenNodes, nbrOfOutputNodes, nbrOfEpoches, lambda )
+function [ Theta1, Theta2, J ] = mlpTrain( y, X, c, nbrOfHiddenNodes, nbrOfOutputNodes, nbrOfEpoches, lambda )
 %MLP_TRAIN trains the multilayer perceptron
 %   labels of the ground truth
 %   X dataset each sample is a row vector
 %   k number of hidden layers
 %   c learning rate
 %   w the generated weights
+%   J error
 
     %% initialization of wheights
     
@@ -28,7 +29,7 @@ function [ Theta1, Theta2 ] = mlpTrain( y, X, c, nbrOfHiddenNodes, nbrOfOutputNo
                                    
                                    
     % optimize the costfunction with fmincg 
-    [nn_params, ~] = fmincg(costFunction, initial_nn_params, options);
+    [nn_params, J] = fmincg(costFunction, initial_nn_params, options);
 
     % Obtain Theta1 and Theta2 back from nn_params
     Theta1 = reshape(nn_params(1:nbrOfHiddenNodes * (nbrOfInputNodes + 1)), ...

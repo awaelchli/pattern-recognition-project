@@ -24,7 +24,7 @@ parfor i = 1 : numel(Cs)
         
     C = Cs(i);
     gamma = Gs(i);
-
+    fprintf("C = %.3d\tgamma = %.3d\t", C, gamma);
     current_options = [svm_options, opt.cost(C), opt.kernel.gamma(gamma), ...
                        opt.cross_validation(k)];
     accuracy(i) = svmtrain(train_labels, train_set, current_options);

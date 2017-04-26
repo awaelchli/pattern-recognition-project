@@ -9,7 +9,9 @@ binarizedImages = cell(nFiles, 1);
 for k=1:nFiles
     images{k} = imread([imagesFolder imageFiles(k).name]);
     % binarize images
-    binarizedImages{k} = imbinarize(images{k}, 0.75);
+    threshold = 0.70;
+    absoluteThreshold = threshold * 255;
+    binarizedImages{k} = images{k} > absoluteThreshold;
 end
 
 end

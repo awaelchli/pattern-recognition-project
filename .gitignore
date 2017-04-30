@@ -6,3 +6,8 @@
 *.synctex.gz
 *.fdb_latexmk
 *.fls
+
+*.iml
+.idea/
+
+__pycache__/

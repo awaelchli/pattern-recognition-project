@@ -12,4 +12,4 @@ load('preprocessing/cut_words.mat');
 fprintf('Binarizing images.');
 [binarizedImages] = binarize_images(cutWords);
 
-imshow(binarizedImages{1}{2});
+imshow(binarizedImages{1, 2}{2});

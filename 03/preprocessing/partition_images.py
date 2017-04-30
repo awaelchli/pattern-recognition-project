@@ -11,7 +11,8 @@ multiple_cut_words = []
 for idx, file in enumerate(files):
     file_number = file[0:3]
     single_cut_word = cut_path(file_number, ground_truth_dir)
-    multiple_cut_words.append(single_cut_word)
+    # also save filename
+    multiple_cut_words.append([file, single_cut_word])
 
 cut_words = np.array(multiple_cut_words)
 sio.savemat('cut_words.mat', {'cutWords': cut_words})

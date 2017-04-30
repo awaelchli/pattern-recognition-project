@@ -4,8 +4,12 @@ close all;
 
 addpath('preprocessing');
 
-% load and binarize images
-fprintf('Loading and binarizing images.');
-[images, binarizedImages] = loadAndBinarizeImages();
+% load mat file with cut words
+fprintf('Loading images.');
+load('preprocessing/cut_words.mat');
 
-imshow(binarizedImages{2});
+% binarize images
+fprintf('Binarizing images.');
+[binarizedImages] = binarize_images(cutWords);
+
+imshow(binarizedImages{1}{2});

@@ -31,10 +31,10 @@ def cut_path(filename, ground_truth_dir):
 
         # cut out bounding box of jpg
         # pixels that are inside the path are copied from the jpg, the others are filled in as zero
-        cut_data = np.empty(shape=(max_y - min_y, max_x - min_x))
-        for i in range(0, max_y - min_y - 1):
+        cut_data = np.zeros(shape=(max_y - min_y, max_x - min_x))
+        for i in range(0, max_y - min_y):
             y = min_y + i
-            for k in range(0, max_x - min_x - 1):
+            for k in range(0, max_x - min_x):
                 x = min_x + k
                 if poly_path.contains_point((x, y)):
                     cut_data[i, k] = image_data[y, x]

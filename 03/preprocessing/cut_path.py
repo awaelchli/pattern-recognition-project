@@ -30,7 +30,7 @@ def cut_path(filename, ground_truth_dir):
         min_y = min(co[1] for co in coordinates)
 
         # cut out bounding box of jpg
-        # pixels that are inside the path are copied from the jpg, the others are filled in as zero
+        # pixels that are inside the path are copied from the jpg, the others are filled in as white
         cut_data = np.zeros(shape=(max_y - min_y, max_x - min_x))
         for i in range(0, max_y - min_y):
             y = min_y + i

@@ -3,6 +3,7 @@
 close all;
 
 addpath('preprocessing');
+addpath('feature_extraction');
 
 % load mat file with cut words
 fprintf('Loading images.\n');

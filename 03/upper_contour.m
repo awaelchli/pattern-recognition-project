@@ -5,18 +5,20 @@ function [ feature ] = upper_contour( window_content )
 %               that the contents are binary with background set to 0 and
 %               foreground set to 1.
 %
-%   Output:     The feature is a vector of size h x 1, where h is the
-%               height of the image. The vector contains a 1 where the
-%               upper contour is present, and zeros everywhere else.
+%   Output:     The feature is the height profile along the upper contour
+%               normalized to the range [0, 1].
 
-feature = zeros(size(window_content, 1), 1);
+idx = find(sum(window_content, 2) ~= 0, 1, 'first');
 
-if (sum(sum(window_content)) > 0)
-    % Upper contour is present
-    
-    [ ~, idx ] = max(sum(window_content, 2) > 0);
-    feature(idx) = 1;
+if(isempty(idx))
+    % No contour present
+    feature = 0;
+else
+    feature = size(window_content, 1) - idx;
 end
+
+% Normalize
+feature = feature / size(window_content, 1);
 
 end
 

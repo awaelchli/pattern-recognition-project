@@ -5,13 +5,11 @@ function [ feature ] = lower_contour( window_content )
 %               that the contents are binary with background set to 0 and
 %               foreground set to 1.
 %
-%   Output:     The feature is a vector of size h x 1, where h is the
-%               height of the image. The vector contains a 1 where the
-%               lower contour is present, and zeros everywhere else.
+%   Output:     The feature is the height profile along the lower contour
+%               normalized to the range [0, 1].
 
 % Compute upper contour on vertically flipped image
-feature = upper_contour(window_content(end : -1: 1, :));
-feature = feature(end : -1 : 1);
+feature = upper_contour(window_content(end : -1 : 1, :));
 
 end
 

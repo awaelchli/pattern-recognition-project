@@ -12,14 +12,10 @@ function [ features ] = sliding_window( image, window_size, window_offset )
 %               window_offset:  Offset when moving the window, by default 
 %                               it is set to 0.
 %           
-%   Outputs:    features:       H x T x 2 matrix, where H is the size of
-%                               the image, T is the number of windows that 
-%                               were produced. The last dimension separates
-%                               different feature types, currently
-%                               supported are upper- and lower contour.
+%   Outputs:    features:       TODO: doc
 
 
-% invert image
+% Invert image
 image = 1 - image;
 
 width = size(image, 2);
@@ -29,7 +25,7 @@ height = size(image, 1);
 locations = 1 : window_offset + window_size : width;
 
 feature_types = 2;
-features = zeros(height, size(locations, 2), feature_types);
+features = zeros(feature_types, size(locations, 2));
 
 for i = 1 : size(locations, 2)
     
@@ -37,8 +33,10 @@ for i = 1 : size(locations, 2)
     l = locations(i);
     window_content = image(:, l : (l + window_size - 1));
     
-    features(:, i, 1) = upper_contour(window_content);
-    features(:, i, 2) = lower_contour(window_content);
+    % Concatenate features
+    features(1, i) = upper_contour(window_content);
+    features(2, i) = lower_contour(window_content);
+    features(3, i) = projected_profile(window_content);
 end
 
 

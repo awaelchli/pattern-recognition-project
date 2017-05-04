@@ -32,11 +32,11 @@ imshow(image);
 title('binarized image');
 
 figure;
-plot(features(:, 1));
+plot(features(1, :));
 title('upper contour feature');
 
 figure;
-plot(features(:, 2));
+plot(features(2, :));
 title('lower contour feature');
 
 %% Dynamic Time Warping

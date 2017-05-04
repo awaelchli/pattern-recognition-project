@@ -1,34 +1,35 @@
-function [ path, pathCost, matrix ] = dynamic_time_warp( features1, features2 )
+function [ path, pathCost, matrix ] = dynamic_time_warp( features1, features2, r)
 %DYNAMIC_TIME_WARP Dynamic time warping (DTW) between two feature sequences
 %
 %   Inputs:     features1:
 %               features2:
+%               r:
 %   
 %   Outputs:    path:
 %               pathCost:
 %               matrix:
 
-
-% TODO: Warping constraints (Sakoe-Chiba band)
-
-
-% Create matrix containing pairwise distances
 N = size(features1, 2);
 M = size(features2, 2);
 
+% Create a mask to constrain the path along the diagonal
+mask = sakoe_chiba_band(N, M, r);
+
+% Create matrix containing pairwise distances.
+% Compute distances only for the masked region, initialize all others with
+% positive infinity
 matrix = inf(N, M);
-for i = 1 : N
-    for j = 1 : M
-        
-        % TODO: Decide how to compute distance with multiple types of
-        % features (lower contour, upper contour, etc.)
-        Fi = squeeze(features1(:, i, :));
-        Fj = squeeze(features2(:, j, :));
-        
-        % Euclidean distance between i-th and j-th feature
-        matrix(i, j) = norm(Fi - Fj);
-        
-    end
+[ Is, Js ] = find(mask);
+
+for k = 1 : numel(Is)
+    i = Is(k);
+    j = Js(k);
+    
+    Fi = features1(:, i);
+    Fj = features2(:, j);
+
+    % Squared euclidean distance between i-th and j-th feature
+    matrix(i, j) = sum((Fi - Fj).^2);
 end
 
 % Initialize path

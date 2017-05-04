@@ -32,14 +32,16 @@ imshow(image);
 title('binarized image');
 
 figure;
-imshow(squeeze(features(:, :, 1)));
+plot(features(:, 1));
 title('upper contour feature');
 
 figure;
-imshow(squeeze(features(:, :, 2)));
+plot(features(:, 2));
 title('lower contour feature');
 
 %% Dynamic Time Warping
+% Reference: http://ciir-publications.cs.umass.edu/pdf/MM-38.pdf
+%
 % Simple example: warping two images (using lower contour)
 
 image1 = binarizedImages{1, 2}{2};
@@ -53,10 +55,13 @@ image2 = imresize(image2, normsize);
 features1 = sliding_window(image1, 1, 0);
 features2 = sliding_window(image2, 1, 0);
 
-features1 = squeeze(features1(:, :, 2)); % select lower contour
-features2 = squeeze(features2(:, :, 2)); % select lower contour
+% "Radius" of diagonal constraint
+r_constraint = 15;
 
-path = dynamic_time_warp(features1, features2);
+[ path, pathCost, matrix ] = dynamic_time_warp(features1, features2, r_constraint);
+
+figure;
+imshow(matrix, []);
 
 figure;
 subplot(2, 2, 1);
@@ -64,9 +69,9 @@ imshow(image1);
 subplot(2, 2, 2);
 imshow(image2);
 subplot(2, 2, 3);
-imshow(squeeze(features1(:, :, 1)));
+plot(features1(1, :));
 subplot(2, 2, 4);
-imshow(squeeze(features2(:, :, 1)));
+plot(features2(1, :));
 
 figure;
 plot(path(2, :), path(1, :));

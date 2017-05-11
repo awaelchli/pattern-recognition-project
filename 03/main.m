@@ -50,8 +50,8 @@ image2 = binarizedImages{3, 2}{2};
 
 % Normalize image sizes
 normsize = [100, 100];
-image1 = imresize(image1, normsize);
-image2 = imresize(image2, normsize);
+image1 = fake_imresize(image1, normsize);
+image2 = fake_imresize(image2, normsize);
 
 features1 = sliding_window(image1, 1, 0);
 features2 = sliding_window(image2, 1, 0);

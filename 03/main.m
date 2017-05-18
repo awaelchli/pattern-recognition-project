@@ -20,25 +20,87 @@ imshow(binarizedImages{1, 2}{2});
 
 %% Compute features with sliding window
 % Simple example with one image
+normsize = [100, 100];
+valid = [11:15];
+r_constraint = 15;
 
-image = binarizedImages{1, 2}{2};
+fileTranscriptionID = fopen('data/ground-truth/transcription.txt','r');
+transcription = textscan(fileTranscriptionID,'%d-%s %s');
 
-window_size = 1;
-window_offset = 0;
+fileID = fopen('keywords.txt','w');
+    
+kwID = fopen('data/task/keywords.txt','r');
+kw = textscan(kwID,'%s');
+kwSize = size(kw{1});
+for index = 1:10 %kwSize(1)
+    index
+    keyword = char(kw{1}(index));
+    fprintf(fileID,'%s',keyword);
 
-features = sliding_window(image, window_size, window_offset);
+    kwIndexesArray = strfind(transcription{1,3},keyword);
+    kwIndexes = find(not(cellfun('isempty', kwIndexesArray)));
+    transIndex = kwIndexes(1);
+    fileName = strcat(num2str(transcription{1,1}(transIndex)),'.svg');
+    
+    biIndexesArray = strfind(binarizedImages(:,1),fileName);
+    biIndexes = find(not(cellfun('isempty', biIndexesArray)));
+    biIndex = biIndexes(1);
+    fileImages = binarizedImages{biIndex,2};
+    
+    transcriptionAtName = find(transcription{1}==transcription{1,1}(transIndex));
+    transStartIndex = transcriptionAtName(1);
+    imageNumber = transIndex-(transStartIndex-1);
+    kwImage=fileImages{imageNumber};
+    
+    %alexandria = binarizedImages{4,2}{129};
+    kwImage = fake_imresize(kwImage, normsize);
+    featuresKw = sliding_window(kwImage, 1, 0);
 
-figure;
-imshow(image);
-title('binarized image');
+    %files from valid.txt 
+    for i=valid
+        imageSize = size(binarizedImages{i,2});
 
-figure;
-plot(features(1, :));
-title('upper contour feature');
+        nameString = strsplit(binarizedImages{i,1},'.');
+        name = char(nameString(1));
+        transcriptionAtName = find(transcription{1}==str2num(name));
+        transStartIndex = transcriptionAtName(1);
+        for j=1:imageSize(1)
+            testImageID = strcat(num2str(transcription{1,1}(transStartIndex+j-1)),'-',char(transcription{1,2}(transStartIndex+j-1)));
 
-figure;
-plot(features(2, :));
-title('lower contour feature');
+            testImage = binarizedImages{i, 2}{j};
+            testImage = fake_imresize(testImage, normsize);
+            featuresTest = sliding_window(testImage, 1, 0);
+
+            [ path, pathCost, matrix ] = dynamic_time_warp(featuresKw, featuresTest, r_constraint);
+
+            fprintf(fileID,', %s, %0.2f',testImageID,pathCost);
+        end
+    end
+    fprintf(fileID,'\n');
+
+end
+fclose(fileID);
+
+
+% 
+% image = binarizedImages{1, 2}{2};
+% 
+% window_size = 1;
+% window_offset = 0;
+% 
+% features = sliding_window(image, window_size, window_offset);
+% 
+% figure;
+% imshow(image);
+% title('binarized image');
+% 
+% figure;
+% plot(features(1, :));
+% title('upper contour feature');
+% 
+% figure;
+% plot(features(2, :));
+% title('lower contour feature');
 
 %% Dynamic Time Warping
 % Reference: http://ciir-publications.cs.umass.edu/pdf/MM-38.pdf
@@ -60,9 +122,10 @@ features2 = sliding_window(image2, 1, 0);
 r_constraint = 15;
 
 [ path, pathCost, matrix ] = dynamic_time_warp(features1, features2, r_constraint);
-
+pathCost
 figure;
 imshow(matrix, []);
+title('Matrix');
 
 figure;
 subplot(2, 2, 1);

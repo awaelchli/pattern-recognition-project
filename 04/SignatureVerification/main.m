@@ -87,21 +87,21 @@ for k=1:numberOfUsers
     tmp_cost = zeros(numberOfEnrollments,1);
     tmp_distance = zeros(numberOfSignaturesPerUser,1);
     for i=1:numberOfSignaturesPerUser 
-        fprintf("Signature: %d\n",(k-1)*numberOfSignaturesPerUser+i);
+        fprintf('Signature: %d\n',(k-1)*numberOfSignaturesPerUser+i);
         for u=1:numberOfEnrollments
             %[~, tmp_cost(u), ~] = dynamic_time_warp(verification{(k-1)*numberOfSignaturesPerUser+i}(:,[2,3,4,8,9])',enrollment{(k-1)*numberOfEnrollments+u}(:,[2,3,4,8,9])',20);
             tmp_cost(u)=dtw(verification{(k-1)*numberOfSignaturesPerUser+i}(:,[2,3,4,8,9]),enrollment{(k-1)*numberOfEnrollments+u}(:,[2,3,4,8,9]),4);
         end
         tmp_distance(i) = mean(tmp_cost);
-        fprintf("distance: %d\n",mean(tmp_distance(i)));
+        fprintf('distance: %d\n',mean(tmp_distance(i)));
     end
-    output = sprintf("%03d",k);
+    output = sprintf('%03d',k);
     [A,I] = sort(tmp_distance);
     for t=1:length(A)
-        output = sprintf("%s %02d,%f",output,I(t),A(t));
+        output = sprintf('%s %02d,%f',output,I(t),A(t));
     end
-    fprintf(fileID,"%s",output);
-    fprintf(fileID,"\n");
+    fprintf(fileID,'%s',output);
+    fprintf(fileID,'\n');
     tmp_classification(I(1:20,1))=true;
     classification = [classification; tmp_classification];
 end
@@ -110,9 +110,9 @@ groundTruth = false(numberOfSignaturesPerUser*numberOfUsers,1);
 groundTruth(gt.g(1:numberOfSignaturesPerUser*numberOfUsers)=='g') = true;
 classification = classification(2:end);
 accuracy = sum(groundTruth(1:numberOfSignaturesPerUser*numberOfUsers) == classification)/length(classification);
-sprintf("Accuracy: %f", accuracy)
+sprintf('Accuracy: %f', accuracy)
 precision = sum(classification(groundTruth(1:numberOfSignaturesPerUser*numberOfUsers)==true))/sum(classification);
-sprintf("Precision: %f", precision)
+sprintf('Precision: %f', precision)
 clear i;
 clear u;
 

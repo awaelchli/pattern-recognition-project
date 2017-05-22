@@ -11,7 +11,11 @@ def cut_path(filename, ground_truth_dir):
     image_data = np.array(image)
 
     multiple_cut_data = []
+    ids = []
     # iterate over words
+    for attribut in attributes:
+        ids.append(attribut['id'])
+        
     for path in paths:
         coordinates = []
         # iterate over edges in word path
@@ -42,6 +46,6 @@ def cut_path(filename, ground_truth_dir):
                     cut_data[i, k] = 255
 
         multiple_cut_data.append(cut_data)
-
+        
     result = np.array(multiple_cut_data)
-    return result
+    return (result,ids)

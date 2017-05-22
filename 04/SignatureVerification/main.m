@@ -62,12 +62,12 @@ clear dy;
 
 %% Normalize
 for i=1:length(enrollment)
-   for u=1:size(enrollment{1},2)
+   for u=1:size(enrollment{i},2)
        enrollment{i}(:,u) = normalize(enrollment{i}(:,u));
    end
 end
 for i=1:length(verification)
-   for u=1:size(verification{1},2)
+   for u=1:size(verification{i},2)
        verification{i}(:,u) = normalize(verification{i}(:,u));
    end
 end

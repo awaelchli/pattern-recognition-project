@@ -6,9 +6,9 @@ Following dependencies need to be present:
 - svgpathtools
 - svgwrite
 
-The script exports the words to a .mat file called cut_words.mat in the folder preprocessing. This
+The script exports the words and the IDs to a .mat file called cut_words.mat in the folder preprocessing. This
 file is then loaded by the matlab script.
+Unfortunately, github does not allow the upload of files of that size, so you have to run the script yourselves.
+You have to change in the script which data you want to export.
 
-For convenience, the .mat file can also be downloaded manually from https://1drv.ms/u/s!Aqm6mJk7Rt7knftvxP_3fs0fUMc3sg
-and added to the preprocessing folder. Then the python script does not need to be run. Unfortunately, github does not allow
-the upload of files of that size.
+Afterwards the main.m file can be run to execute KWS on the test files and producing the output as result.txt file.

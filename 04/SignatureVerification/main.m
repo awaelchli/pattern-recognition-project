@@ -3,20 +3,20 @@ clear all;
 close all;
 
 %% Load enrollment
-fnames = dir('enrollment/*.txt');
+fnames = dir('Validation/enrollment/*.txt');
 numfids = length(fnames);
 enrollment = cell(1,numfids);
 for K = 1:numfids
-  enrollment{K} = load(['enrollment/',fnames(K).name]);
+  enrollment{K} = load(['Validation/enrollment/',fnames(K).name]);
 end
 
 %% Load verification
 load('gt.mat');
-fnames = dir('verification/*.txt');
+fnames = dir('Validation/verification/*.txt');
 numfids = length(fnames);
 verification = cell(1,numfids);
 for K = 1:numfids
-  verification{K} = load(['verification/',fnames(K).name]);
+  verification{K} = load(['Validation/verification/',fnames(K).name]);
 end
 
 clear fnames;
@@ -76,12 +76,12 @@ clear i;
 clear u;
 
 %% Verification
-numberOfUsers = 30;
+numberOfUsers = 70;
 numberOfEnrollments = 5;
 numberOfSignaturesPerUser = 45;
 
 classification = inf;
-fileID = fopen('results.txt','w');
+fileID = fopen('Validation/results.txt','w');
 for k=1:numberOfUsers 
     tmp_classification = false(numberOfSignaturesPerUser,1);
     tmp_cost = zeros(numberOfEnrollments,1);
@@ -95,10 +95,10 @@ for k=1:numberOfUsers
         tmp_distance(i) = mean(tmp_cost);
         fprintf('distance: %d\n',mean(tmp_distance(i)));
     end
-    output = sprintf('%03d',k);
+    output = sprintf('%03d',k+30); %% add 30 for the user
     [A,I] = sort(tmp_distance);
     for t=1:length(A)
-        output = sprintf('%s %02d,%f',output,I(t),A(t));
+        output = sprintf('%s, %02d, %f',output,I(t),A(t));
     end
     fprintf(fileID,'%s',output);
     fprintf(fileID,'\n');
@@ -106,13 +106,14 @@ for k=1:numberOfUsers
     classification = [classification; tmp_classification];
 end
 fclose(fileID);
-groundTruth = false(numberOfSignaturesPerUser*numberOfUsers,1);
-groundTruth(gt.g(1:numberOfSignaturesPerUser*numberOfUsers)=='g') = true;
-classification = classification(2:end);
-accuracy = sum(groundTruth(1:numberOfSignaturesPerUser*numberOfUsers) == classification)/length(classification);
-sprintf('Accuracy: %f', accuracy)
-precision = sum(classification(groundTruth(1:numberOfSignaturesPerUser*numberOfUsers)==true))/sum(classification);
-sprintf('Precision: %f', precision)
+% no info about groundtruth for the validation
+%groundTruth = false(numberOfSignaturesPerUser*numberOfUsers,1);
+%groundTruth(gt.g(1:numberOfSignaturesPerUser*numberOfUsers)=='g') = true;
+%classification = classification(2:end);
+%accuracy = sum(groundTruth(1:numberOfSignaturesPerUser*numberOfUsers) == classification)/length(classification);
+%sprintf('Accuracy: %f', accuracy)
+%precision = sum(classification(groundTruth(1:numberOfSignaturesPerUser*numberOfUsers)==true))/sum(classification);
+%sprintf('Precision: %f', precision)
 clear i;
 clear u;
 
